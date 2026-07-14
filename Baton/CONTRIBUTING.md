@@ -12,13 +12,13 @@
 
 ## Local development
 
-
+```bash
 make generate manifests
 make install
 make run
 make test
 make lint
-
+```
 ## Commits
 
 Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`, `chore:`). Signed commits preferred.
