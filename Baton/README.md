@@ -1,7 +1,7 @@
 # Baton
 
-[![CI](https://github.com/jwilson/baton/actions/workflows/ci.yml/badge.svg)](https://github.com/jwilson/baton/actions/workflows/ci.yml)
-[![Go Reference](https://pkg.go.dev/badge/github.com/jwilson/baton.svg)](https://pkg.go.dev/github.com/jwilson/baton)
+[![CI](https://github.com/jlawrence/baton/actions/workflows/ci.yml/badge.svg)](https://github.com/jlawrence/baton/actions/workflows/ci.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/jlawrence/baton.svg)](https://pkg.go.dev/github.com/jlawrence/baton)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 **A deterministic Kubernetes control plane that lets AI agents *propose* changes and never lets them *make* changes.**
@@ -113,8 +113,8 @@ kubectl get actions -A -o wide
 Every tagged release publishes a Syft SBOM and a keyless cosign signature. Verify before you run it:
 
 ```bash
-cosign verify ghcr.io/jwilson/baton:$TAG \
-  --certificate-identity-regexp 'https://github.com/jwilson/baton/.*' \
+cosign verify ghcr.io/jlawrence/baton:$TAG \
+  --certificate-identity-regexp 'https://github.com/jlawrence/baton/.*' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
 
@@ -126,8 +126,8 @@ cosign verify ghcr.io/jwilson/baton:$TAG \
 
 ## Related
 
-- [`lode`](https://github.com/jwilson/lode) — Rust log agent feeding the evidence store
-- [`traffic-lab`](https://github.com/jwilson/traffic-lab) — failure injection harness that exercises the Action path
+- [`lode`](https://github.com/jlawrence/lode) — Rust log agent feeding the evidence store
+- [`traffic-lab`](https://github.com/jlawrence/traffic-lab) — failure injection harness that exercises the Action path
 
 ## License
 

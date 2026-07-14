@@ -1,6 +1,6 @@
 # ---- Config: override via env or command line. ----
 REGISTRY       ?= ghcr.io
-IMAGE_OWNER    ?= jwilson
+IMAGE_OWNER    ?= jlawrence
 IMAGE_TAG      ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 PLATFORMS      ?= linux/amd64,linux/arm64
 NAMESPACE      ?= traffic-lab

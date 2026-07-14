@@ -1,6 +1,6 @@
 # ---- Config: override via env or command line. Nothing baked into the binary. ----
 REGISTRY       ?= ghcr.io
-IMAGE_REPO     ?= jwilson/lode
+IMAGE_REPO     ?= jlawrence/lode
 IMAGE_TAG      ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 IMG            ?= $(REGISTRY)/$(IMAGE_REPO):$(IMAGE_TAG)
 TARGET         ?= x86_64-unknown-linux-musl

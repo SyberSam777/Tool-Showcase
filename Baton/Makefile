@@ -1,6 +1,6 @@
 # ---- Config (override on the command line or via env; nothing is baked in) ----
 REGISTRY        ?= ghcr.io
-IMAGE_REPO      ?= jwilson/baton
+IMAGE_REPO      ?= jlawrence/baton
 IMAGE_TAG       ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 IMG             ?= $(REGISTRY)/$(IMAGE_REPO):$(IMAGE_TAG)
 PLATFORMS       ?= linux/amd64,linux/arm64

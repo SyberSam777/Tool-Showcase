@@ -1,6 +1,6 @@
 # lode
 
-[![CI](https://github.com/jwilson/lode/actions/workflows/ci.yml/badge.svg)](https://github.com/jwilson/lode/actions/workflows/ci.yml)
+[![CI](https://github.com/jlawrence/lode/actions/workflows/ci.yml/badge.svg)](https://github.com/jlawrence/lode/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 **A Rust log-shipping agent for Kubernetes that redacts at the edge, not at the index.**
@@ -134,8 +134,8 @@ collide with top-level metadata — is tracked in [#roadmap](docs/ROADMAP.md).
 
 ## Related
 
-- [`baton`](https://github.com/jwilson/baton) — control plane that consumes lode's output as Action evidence
-- [`traffic-lab`](https://github.com/jwilson/traffic-lab) — generates the log floods and PII leaks that exercise the redaction path
+- [`baton`](https://github.com/jlawrence/baton) — control plane that consumes lode's output as Action evidence
+- [`traffic-lab`](https://github.com/jlawrence/traffic-lab) — generates the log floods and PII leaks that exercise the redaction path
 
 ## License
 

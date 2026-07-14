@@ -1,6 +1,6 @@
 # traffic-lab
 
-[![CI](https://github.com/jwilson/traffic-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/jwilson/traffic-lab/actions/workflows/ci.yml)
+[![CI](https://github.com/jlawrence/traffic-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/jlawrence/traffic-lab/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 **A failure-injection and load harness that makes a control plane prove it works.**
@@ -20,7 +20,7 @@ Two binaries:
 
 ## Scenario → Action class map
 
-Each scenario is designed to provoke a specific `Action` class in [`baton`](https://github.com/jwilson/baton),
+Each scenario is designed to provoke a specific `Action` class in [`baton`](https://github.com/jlawrence/baton),
 so the harness tests a *policy path*, not just a service.
 
 | Scenario | Symptom | Expected detection | Expected Baton Action class |
@@ -110,8 +110,8 @@ in the UI and let it drift.
 
 ## Related
 
-- [`baton`](https://github.com/jwilson/baton) — the control plane whose policy paths this exercises
-- [`lode`](https://github.com/jwilson/lode) — the agent whose redaction path `log-flood` tests
+- [`baton`](https://github.com/jlawrence/baton) — the control plane whose policy paths this exercises
+- [`lode`](https://github.com/jlawrence/lode) — the agent whose redaction path `log-flood` tests
 
 ## License
 
