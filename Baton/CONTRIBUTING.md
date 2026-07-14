@@ -12,13 +12,12 @@
 
 ## Local development
 
-```bash
-make generate manifests   # deepcopy + CRD YAML
-make install              # CRDs into current context
-make run                  # controller locally, dry-run
+
+make generate manifests
+make install
+make run
 make test
 make lint
-```
 
 ## Commits
 
