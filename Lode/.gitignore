@@ -1,0 +1,11 @@
+/target
+**/*.rs.bk
+Cargo.lock.orig
+dist/
+.env
+.envrc
+kubeconfig
+*.kubeconfig
+.idea/
+.vscode/
+.DS_Store

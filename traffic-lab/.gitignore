@@ -1,0 +1,13 @@
+bin/
+dist/
+*.test
+*.out
+vendor/
+.env
+.envrc
+kubeconfig
+*.kubeconfig
+results/
+.idea/
+.vscode/
+.DS_Store

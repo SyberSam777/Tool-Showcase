@@ -1,0 +1,132 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  GO_VERSION: "1.22"
+  REGISTRY: ghcr.io
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version: "1.22", cache: true }
+      - name: gofmt
+        run: |
+          u=$(gofmt -l . || true)
+          [ -z "$u" ] || { echo "::error::gofmt needed:"; echo "$u"; exit 1; }
+      - run: go vet ./...
+      - uses: golangci/golangci-lint-action@v6
+        with: { version: latest, args: "--timeout=5m" }
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version: "1.22", cache: true }
+      - run: go test ./... -race
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  no-real-pii:
+    name: Assert synthetic PII only
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reject anything outside the reserved test ranges
+        run: |
+          # log-flood generates fake PII on purpose. This gate makes sure nobody ever
+          # commits a real-looking value: SSNs must be 900-xx-xxxx, emails @example.com.
+          bad=0
+          if grep -rInE '\b(?!900)[0-9]{3}-[0-9]{2}-[0-9]{4}\b' --include='*.go' --include='*.yaml' . -P; then
+            echo "::error::non-reserved SSN pattern found"; bad=1
+          fi
+          if grep -rInE '[[:alnum:]._%+-]+@(?!example\.(com|org|net))[[:alnum:].-]+\.[a-z]{2,}' \
+              --include='*.go' --include='*.yaml' . -P | grep -v 'noreply\|users.noreply'; then
+            echo "::error::non-example.com email found"; bad=1
+          fi
+          exit $bad
+
+  images:
+    needs: [lint, test, secrets, no-real-pii]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    strategy:
+      matrix:
+        binary: [misbehave, loadgen]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: build/${{ matrix.binary }}/Dockerfile
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.binary }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=sha,format=long
+      - uses: docker/login-action@v3
+        if: github.event_name != 'pull_request'
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        id: build
+        with:
+          context: .
+          file: build/${{ matrix.binary }}/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          provenance: true
+          sbom: true
+      - uses: aquasecurity/trivy-action@master
+        if: github.event_name != 'pull_request'
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.binary }}:sha-${{ github.sha }}
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
+      - uses: sigstore/cosign-installer@v3
+        if: startsWith(github.ref, 'refs/tags/')
+      - name: Sign (keyless)
+        if: startsWith(github.ref, 'refs/tags/')
+        run: cosign sign --yes ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.binary }}@${{ steps.build.outputs.digest }}
+
+  manifests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          curl -sSL -o kc.tar.gz https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz
+          tar xzf kc.tar.gz
+          ./kubeconform -strict -ignore-missing-schemas -summary deploy/
+      - name: Grafana dashboards must be valid JSON
+        run: |
+          for f in dashboards/*.json; do python3 -c "import json,sys;json.load(open('$f'))" || exit 1; done

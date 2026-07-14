@@ -1,0 +1,14 @@
+bin/
+dist/
+cover.out
+coverage.out
+*.test
+*.out
+vendor/
+.env
+.envrc
+kubeconfig
+*.kubeconfig
+.idea/
+.vscode/
+.DS_Store
